@@ -1,4 +1,3 @@
-// File: Node.java
 public class Node {
     String username;
     String password;
