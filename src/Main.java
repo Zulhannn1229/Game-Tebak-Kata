@@ -1,3 +1,4 @@
+// Main.java
 import java.util.Scanner;
 
 public class Main {
@@ -16,7 +17,7 @@ public class Main {
                 System.out.print("Pilih opsi: ");
 
                 int choice = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:
@@ -52,7 +53,7 @@ public class Main {
                 System.out.print("Pilih opsi: ");
 
                 int choice = scanner.nextInt();
-                scanner.nextLine(); 
+                scanner.nextLine();
 
                 switch (choice) {
                     case 1:

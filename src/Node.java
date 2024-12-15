@@ -1,3 +1,4 @@
+//Node.java
 public class Node {
     String username;
     String password;
@@ -5,8 +6,8 @@ public class Node {
     String word;
     String hint;
     int score;
-    Node left, right; 
-    Node next, prev; 
+    Node left, right;
+    Node next, prev;
 
     public Node(String username, String password) {
         this.username = username;
@@ -40,7 +41,4 @@ public class Node {
         this.next = null;
         this.prev = null;
     }
-
-
-    //??
 }
