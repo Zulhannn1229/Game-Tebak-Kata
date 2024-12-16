@@ -37,7 +37,7 @@ public class Main {
                         break;
 
                     case 3:
-                        System.out.println("Keluar dari program. Sampai jumpa!");
+                        System.out.println("Test dari program. Sampai jumpa!");
                         scanner.close();
                         return;
 
