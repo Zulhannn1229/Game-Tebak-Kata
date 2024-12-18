@@ -1,12 +1,12 @@
-// Main.java
 import java.util.Scanner;
 
 public class Main {
-
     public static void main(String[] args) {
-        DoubleLinkedList userList = new DoubleLinkedList();
+        DLL userList = new DLL();
+        LevelTree gameLevels = new LevelTree();
         Scanner scanner = new Scanner(System.in);
         boolean isLoggedIn = false;
+        User currentUser = null;
 
         while (true) {
             if (!isLoggedIn) {
@@ -14,10 +14,9 @@ public class Main {
                 System.out.println("1. Sign Up");
                 System.out.println("2. Login");
                 System.out.println("3. Exit");
-                System.out.print("Pilih opsi: ");
 
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                System.out.print("Pilih opsi: ");
+                int choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
                     case 1:
@@ -27,22 +26,17 @@ public class Main {
                         String passwordSignUp = scanner.nextLine();
                         userList.signUp(usernameSignUp, passwordSignUp);
                         break;
-
                     case 2:
                         System.out.print("Masukkan username: ");
                         String usernameLogin = scanner.nextLine();
                         System.out.print("Masukkan password: ");
                         String passwordLogin = scanner.nextLine();
-                        isLoggedIn = userList.login(usernameLogin, passwordLogin);
+                        currentUser = userList.login(usernameLogin, passwordLogin);
+                        isLoggedIn = currentUser != null;
                         break;
-
                     case 3:
-                        System.out.println("Test dari program. Sampai jumpa!");
-                        scanner.close();
+                        System.out.println("Keluar dari program. Sampai jumpa!");
                         return;
-
-                    default:
-                        System.out.println("Opsi tidak valid, silakan pilih lagi.");
                 }
             } else {
                 System.out.println("\n=== Menu Login ===");
@@ -50,34 +44,27 @@ public class Main {
                 System.out.println("2. Cari User");
                 System.out.println("3. Leaderboard");
                 System.out.println("4. Logout");
-                System.out.print("Pilih opsi: ");
 
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                System.out.print("Pilih opsi: ");
+                int choice = Integer.parseInt(scanner.nextLine());
 
                 switch (choice) {
                     case 1:
-                        System.out.println("Game dimulai!");
+                        gameLevels.startGame(currentUser);
                         break;
-
                     case 2:
                         System.out.print("Masukkan nama user yang dicari: ");
                         String searchUser = scanner.nextLine();
                         userList.searchUser(searchUser);
                         break;
-
                     case 3:
-                        System.out.println("Menampilkan leaderboard...");
                         userList.showLeaderboard();
                         break;
-
                     case 4:
                         System.out.println("Logout berhasil. Kembali ke menu utama.");
                         isLoggedIn = false;
+                        currentUser = null;
                         break;
-
-                    default:
-                        System.out.println("Opsi tidak valid, silakan pilih lagi.");
                 }
             }
         }
