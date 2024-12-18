@@ -1,45 +1,37 @@
 //Stack.java
 class Stack {
-    private class Node {
+    private class HintNode {
         String petunjuk;
-        Node next;
-
-        public Node(String petunjuk) {
+        HintNode next;
+        public HintNode(String petunjuk) {
             this.petunjuk = petunjuk;
             this.next = null;
         }
     }
-
-    private Node top;
-    private int size;
-    private int maxSize;
-
-    public Stack(int maxSize) {
-        this.top = null;
-        this.size = 0;
-        this.maxSize = maxSize;
+    private HintNode top;
+    public Stack(){
+        top = null;
     }
-
-    public void push(String petunjuk) {
-        if (size == maxSize) {
-            System.out.println("Tidak dapat menambahkan petunjuk terbaru.");
-        } else {
-            Node newNode = new Node(petunjuk);
+    public void push(String petunjuk){
+        HintNode newNode = new HintNode(petunjuk);
+        if (top == null){
+            top = newNode;
+        }else{
             newNode.next = top;
             top = newNode;
-            size++;
         }
     }
-
-    public String pop() {
-        if (top == null) {
-            System.out.println("Tidak ada petunjuk yang tersedia");
+    public String pop(){
+        if (top == null){
+            System.out.println("Tidak ada hint");
             return null;
-        } else {
-            String petunjuk = top.petunjuk;
+        }else{
+            String hint = top.petunjuk;
             top = top.next;
-            size--;
-            return petunjuk;
+            return hint;
         }
+    }
+    public boolean isEmpty(){
+        return top == null;
     }
 }
