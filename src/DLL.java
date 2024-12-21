@@ -1,4 +1,4 @@
-// DoubleLinkedList.java
+// DLL.java
 class DLL {
     private class Node {
         User user;
@@ -14,7 +14,7 @@ class DLL {
 
     public void signUp(String username, String password) {
         if (search(username) != null) {
-            System.out.println("Username sudah digunakan.");
+            System.out.println("Username sudah digunakan");
             return;
         }
         Node newNode = new Node(new User(username, password));
@@ -28,16 +28,16 @@ class DLL {
             temp.next = newNode;
             newNode.prev = temp;
         }
-        System.out.println("Pendaftaran berhasil.");
+        System.out.println("Pendaftaran berhasil");
     }
 
     public User login(String username, String password) {
         Node userNode = search(username);
         if (userNode != null && userNode.user.password.equals(password)) {
-            System.out.println("Login berhasil.");
+            System.out.println("Login berhasil");
             return userNode.user;
         }
-        System.out.println("Username atau password salah.");
+        System.out.println("Username atau password salah");
         return null;
     }
 
@@ -57,7 +57,7 @@ class DLL {
         if (result != null) {
             System.out.println("User ditemukan: " + result.user.username);
         } else {
-            System.out.println("User tidak ditemukan.");
+            System.out.println("User tidak ditemukan");
         }
     }
 
@@ -85,15 +85,33 @@ class DLL {
         return array;
     }
 
+    // Bubble Sort
+    // private void sort(Node[] nodes) {
+    //     for (int i = 0; i < nodes.length - 1; i++) {
+    //         for (int j = 0; j < nodes.length - i - 1; j++) {
+    //             if (nodes[j].user.score < nodes[j + 1].user.score) {
+    //                 Node temp = nodes[j];
+    //                 nodes[j] = nodes[j + 1];
+    //                 nodes[j + 1] = temp;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // Selection Sort
     private void sort(Node[] nodes) {
+        // Implementasi Selection Sort
         for (int i = 0; i < nodes.length - 1; i++) {
-            for (int j = 0; j < nodes.length - i - 1; j++) {
-                if (nodes[j].user.score < nodes[j + 1].user.score) {
-                    Node temp = nodes[j];
-                    nodes[j] = nodes[j + 1];
-                    nodes[j + 1] = temp;
+            int maxIndex = i;
+            for (int j = i + 1; j < nodes.length; j++) {
+                if (nodes[j].user.score > nodes[maxIndex].user.score) {
+                    maxIndex = j;
                 }
             }
+            // Swap
+            Node temp = nodes[maxIndex];
+            nodes[maxIndex] = nodes[i];
+            nodes[i] = temp;
         }
     }
 }

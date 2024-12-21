@@ -1,66 +1,121 @@
+// LevelTree.java
 import java.util.Scanner;
 
 class LevelTree {
-    private class LevelNode {
-        String level;
-        InitData.Tebak[] questions;
-        LevelNode left;
-        LevelNode right;
-
-        public LevelNode(String level, InitData.Tebak[] questions) {
-            this.level = level;
-            this.questions = questions;
-        }
-    }
-
-    private LevelNode root;
+    private TebakanQueue tebakanQueue;
+    private PetunjukStack petunjukStack;
+    private String currentLevel;
 
     public LevelTree() {
-        root = new LevelNode("Easy", InitData.initEasy());
-        root.left = new LevelNode("Medium", InitData.initMedium());
-        root.left.left = new LevelNode("Hard", InitData.initHard());
+        tebakanQueue = new TebakanQueue();
+        petunjukStack = new PetunjukStack();
+        initializeLevels("Easy");
+    }
+
+    private void initializeLevels(String level) {
+        currentLevel = level;
+        Tebakan.DataTebakan[] questions;
+
+        switch (level) {
+            case "Easy":
+                questions = Tebakan.EasyLevel();
+                break;
+            case "Medium":
+                questions = Tebakan.MediumLevel();
+                break;
+            case "Hard":
+                questions = Tebakan.HardLevel();
+                break;
+            default:
+                return;
+        }
+
+        // Reset queue dan stack
+        while (!tebakanQueue.isEmpty()) {
+            tebakanQueue.dequeue();
+        }
+
+        // Isi queue dan stack dengan pertanyaan level saat ini
+        for (Tebakan.DataTebakan tebakan : questions) {
+            tebakanQueue.enqueue(tebakan);
+            petunjukStack.push(tebakan.petunjuk);
+        }
     }
 
     public void startGame(User user) {
-        playLevel(root, user);
-    }
+        Helper.clearScreen();
+        System.out.println("---------------------");
+        System.out.println("     " + currentLevel + " Level    ");
+        System.out.println("---------------------\n");
 
-    private void playLevel(LevelNode node, User user) {
-        System.out.println("\nAnda berada di level: " + node.level);
-        int attempts = 3;
+        int totalQuestions = tebakanQueue.getSize();
+        int answeredCorrectly = 0;
+        int attempts = 5;
+
         Scanner scanner = new Scanner(System.in);
 
-        for (InitData.Tebak tebak : node.questions) {
-            boolean correct = false;
-            while (attempts > 0 && !correct) {
-                System.out.println(tebak);
-                System.out.print("Jawaban Anda: ");
-                String answer = scanner.nextLine().trim().toLowerCase();
+        while (!tebakanQueue.isEmpty() && attempts > 0) {
+            Tebakan.DataTebakan currentTebakan = tebakanQueue.dequeue();
+            boolean questionAnswered = false;
 
-                if (answer.equals(tebak.jawaban)) {
-                    System.out.println("Benar!");
+            System.out.println("Pertanyaan: " + currentTebakan.pertanyaan);
+
+            // Opsi petunjuk
+            System.out.println("\nLihat petunjuk? (y/n)");
+            String hintChoice = scanner.nextLine().trim().toLowerCase();
+            if (hintChoice.equals("y") && !petunjukStack.isEmpty()) {
+                String hint = petunjukStack.pop();
+                System.out.println("Petunjuk: " + hint);
+            }
+
+            // Proses menjawab
+            for (int i = 3; i > 0; i--) {
+                System.out.print("\nJawaban Anda (Kesempatan " + i + "): ");
+                String userAnswer = scanner.nextLine().trim().toLowerCase();
+
+                if (userAnswer.equals(currentTebakan.jawaban)) {
+                    System.out.println("\u2714 Benar!");
                     user.score += 10;
-                    correct = true;
+                    answeredCorrectly++;
+                    questionAnswered = true;
+                    break;
                 } else {
-                    attempts--;
-                    if (attempts > 0) {
-                        System.out.println("Salah! Kesempatan tersisa: " + attempts);
-                    } else {
-                        System.out.println("Kesempatan habis! Jawaban yang benar adalah: " + tebak.jawaban);
-                    }
+                    System.out.println("\u274C Salah!");
                 }
             }
-            if (attempts == 0) {
-                System.out.println("Game over. Skor Anda: " + user.score);
-                return;
+
+            if (!questionAnswered) {
+                System.out.println("\nJawaban yang benar: " + currentTebakan.jawaban);
+                attempts--;
             }
+
+            System.out.println("\n----------------------------------------------------------------------------------\n");
         }
 
-        if (node.left != null) {
-            System.out.println("Selamat! Anda lanjut ke level berikutnya.");
-            playLevel(node.left, user);
+        // Evaluasi hasil permainan
+        if (attempts > 0) {
+            System.out.println("\u2728 Selamat! Anda menjawab " + answeredCorrectly + " dari " + totalQuestions + " pertanyaan.");
+
+            // Lanjut ke level berikutnya
+            if (currentLevel.equals("Easy")) {
+                initializeLevels("Medium");
+                System.out.println("\n\u2728 Anda lanjut ke level Medium!");
+                Helper.pressEnterKeyToContinue();
+                startGame(user);
+            } else if (currentLevel.equals("Medium")) {
+                initializeLevels("Hard");
+                System.out.println("\n\u2728 Anda lanjut ke level Hard!");
+                Helper.pressEnterKeyToContinue();
+                startGame(user);
+            } else {
+                System.out.println("\n\u2728 Selamat! Anda telah menyelesaikan semua level.");
+            }
         } else {
-            System.out.println("Selamat! Anda telah menyelesaikan semua level. Skor akhir Anda: " + user.score);
+            System.out.println("\u2620 Game over. Kesempatan habis.");
         }
+
+        System.out.println("Skor Anda: " + user.score);
+        Helper.pressEnterKeyToContinue();
+        Helper.clearScreen();
     }
 }
